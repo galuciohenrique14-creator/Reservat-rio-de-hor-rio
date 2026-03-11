@@ -1,0 +1,1456 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reserva de Quadra EETEPA - Sistema Inteligente</title>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    
+    <style>
+        :root {
+            --primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --danger: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
+            --success: linear-gradient(135deg, #51cf66 0%, #40c057 100%);
+            --light-bg: #f5f7fa;
+            --white: #ffffff;
+            --text-dark: #1a1a1a;
+            --text-light: #666;
+            --shadow: 0 15px 35px rgba(0,0,0,0.1);
+            --shadow-sm: 0 5px 15px rgba(0,0,0,0.05);
+            --border-radius: 15px;
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background: var(--light-bg);
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
+
+        header {
+            background: var(--white);
+            box-shadow: var(--shadow-sm);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        nav {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1.5rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8em;
+            font-weight: 700;
+            background: var(--primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--text-dark);
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        .nav-links a:hover {
+            color: #667eea;
+        }
+
+        .cta-button {
+            background: var(--primary);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 50px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            transition: var(--transition);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .hero {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 6rem 2rem;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: center;
+        }
+
+        .hero-content h1 {
+            font-size: 3.5em;
+            margin-bottom: 1.5rem;
+            background: var(--primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1.2;
+        }
+
+        .hero-content p {
+            font-size: 1.2em;
+            color: var(--text-light);
+            margin-bottom: 2rem;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            padding: 1rem 2.5rem;
+            border-radius: 50px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1.1em;
+            transition: var(--transition);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: #667eea;
+            padding: 1rem 2.5rem;
+            border-radius: 50px;
+            border: 2px solid #667eea;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1.1em;
+            transition: var(--transition);
+        }
+
+        .btn-secondary:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        .hero-image {
+            text-align: center;
+            font-size: 10em;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .features {
+            background: var(--white);
+            padding: 4rem 2rem;
+        }
+
+        .features-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5em;
+            margin-bottom: 1rem;
+            background: var(--primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            color: var(--text-light);
+            font-size: 1.2em;
+            margin-bottom: 3rem;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .feature-card {
+            background: var(--light-bg);
+            padding: 2rem;
+            border-radius: var(--border-radius);
+            text-align: center;
+            transition: var(--transition);
+            border: 1px solid #e1e5e9;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--shadow);
+            background: var(--white);
+        }
+
+        .feature-icon {
+            font-size: 3em;
+            margin-bottom: 1rem;
+        }
+
+        .feature-card h3 {
+            font-size: 1.5em;
+            margin-bottom: 1rem;
+            color: var(--text-dark);
+        }
+
+        .feature-card p {
+            color: var(--text-light);
+            font-size: 1em;
+        }
+
+        .reservation-hero {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+            padding: 3rem 2rem;
+            text-align: center;
+            margin: 4rem 0 3rem;
+        }
+
+        .reservation-hero h2 {
+            font-size: 2.5em;
+            color: var(--text-dark);
+            margin-bottom: 1rem;
+        }
+
+        .reservation-hero p {
+            color: var(--text-light);
+            font-size: 1.1em;
+        }
+
+        .system-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 2rem 3rem;
+        }
+
+        label {
+            display: block;
+            margin-top: 1.2rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            font-size: 1em;
+        }
+
+        .info-box {
+            background: #e8ecff;
+            padding: 1rem;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+            margin-top: 0.5rem;
+            color: #667eea;
+            font-weight: 600;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 0.75rem;
+            margin-top: 0.5rem;
+            border-radius: 8px;
+            border: 2px solid #e1e5e9;
+            font-size: 1em;
+            transition: var(--transition);
+            background: var(--white);
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 10px rgba(102, 126, 234, 0.2);
+        }
+
+        button {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            width: 100%;
+            border: none;
+            border-radius: 8px;
+            background: var(--primary);
+            color: white;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .error {
+            color: #ee5a52;
+            margin-top: 1rem;
+            font-weight: 500;
+            background: rgba(238, 90, 82, 0.1);
+            padding: 0.75rem;
+            border-radius: 8px;
+            border-left: 4px solid #ee5a52;
+        }
+
+        .success {
+            color: #40c057;
+            margin-top: 1rem;
+            font-weight: 500;
+            background: rgba(64, 192, 87, 0.1);
+            padding: 0.75rem;
+            border-radius: 8px;
+            border-left: 4px solid #40c057;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+            margin-top: 1rem;
+        }
+
+        li {
+            padding: 0.8rem;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        li:last-child {
+            border-bottom: none;
+        }
+
+        li:before {
+            content: '⏰';
+            margin-right: 0.75rem;
+        }
+
+        .print-btn {
+            background: var(--success);
+            margin-top: 0.5rem;
+            width: auto;
+            padding: 0.75rem 1.5rem;
+            box-shadow: 0 5px 15px rgba(64, 192, 87, 0.3);
+        }
+
+        .print-btn:hover {
+            box-shadow: 0 10px 25px rgba(64, 192, 87, 0.4);
+        }
+
+        .button-group {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+            margin-top: 1rem;
+        }
+
+        .button-group button {
+            flex: 1;
+            min-width: 150px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal.active {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-content {
+            background-color: var(--white);
+            padding: 2rem;
+            border-radius: var(--border-radius);
+            width: 90%;
+            max-width: 600px;
+            box-shadow: var(--shadow);
+            animation: slideUp 0.3s ease;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .modal-close {
+            float: right;
+            font-size: 1.5em;
+            cursor: pointer;
+            color: var(--text-light);
+        }
+
+        .modal-close:hover {
+            color: var(--text-dark);
+        }
+
+        .horario-item {
+            background: #f0f4ff;
+            padding: 1rem;
+            margin: 0.75rem 0;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+            cursor: pointer;
+            transition: var(--transition);
+            border: 2px solid transparent;
+        }
+
+        .horario-item:hover {
+            background: #e8ecff;
+            transform: translateX(5px);
+        }
+
+        .horario-item.selected {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .horario-item strong {
+            display: block;
+            font-size: 1.1em;
+            margin-bottom: 0.3rem;
+        }
+
+        .horario-item small {
+            display: block;
+            opacity: 0.8;
+            font-size: 0.9em;
+        }
+
+        .footer {
+            background: var(--text-dark);
+            color: var(--white);
+            text-align: center;
+            padding: 2rem;
+            margin-top: 4rem;
+        }
+
+        .footer p {
+            margin: 0.5rem 0;
+        }
+
+        @media (max-width: 768px) {
+            .hero {
+                grid-template-columns: 1fr;
+                padding: 3rem 1rem;
+            }
+
+            .hero-content h1 {
+                font-size: 2.5em;
+            }
+
+            .hero-image {
+                font-size: 6em;
+            }
+
+            .nav-links {
+                gap: 1rem;
+            }
+
+            .section-title {
+                font-size: 2em;
+            }
+
+            .hero-buttons {
+                flex-direction: column;
+            }
+
+            .btn-primary, .btn-secondary {
+                width: 100%;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+
+            .button-group button {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .nav-links {
+                display: none;
+            }
+
+            .hero-content h1 {
+                font-size: 2em;
+            }
+
+            .logo {
+                font-size: 1.3em;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <nav>
+            <div class="logo">🏀 EETEPA Quadra</div>
+            <ul class="nav-links">
+                <li><a href="#features">Recursos</a></li>
+                <li><a href="#reservation">Reservar</a></li>
+                <li><a href="#contact">Contato</a></li>
+            </ul>
+            <button class="cta-button" onclick="openModal('reserve-modal')">Reservar Agora</button>
+        </nav>
+    </header>
+
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Sua Quadra, Seu Horário</h1>
+            <p>Sistema inteligente e seguro para reservar quadras na EETEPA. Rápido, fácil e confiável.</p>
+            <div class="hero-buttons">
+                <button class="btn-primary" onclick="openModal('reserve-modal')">🎫 Fazer Reserva</button>
+                <button class="btn-secondary" onclick="openModal('list-modal')">📋 Ver Disponibilidade</button>
+            </div>
+        </div>
+        <div class="hero-image">🏀</div>
+    </section>
+
+    <section class="features" id="features">
+        <div class="features-container">
+            <h2 class="section-title">Recursos</h2>
+            <p class="section-subtitle">Tudo que você precisa para gerenciar suas reservas</p>
+            
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">⚡</div>
+                    <h3>Reserva Rápida</h3>
+                    <p>Reserve em segundos com nossa interface intuitiva</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">📅</div>
+                    <h3>Agendamento Mensal</h3>
+                    <p>Reserve horários fixos em dias da semana específicos</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🔒</div>
+                    <h3>100% Seguro</h3>
+                    <p>Seus dados ficam salvos localmente no seu navegador</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">📄</div>
+                    <h3>Comprovante Digital</h3>
+                    <p>Gere PDF de suas reservas em um clique</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🔄</div>
+                    <h3>Cancelamento Fácil</h3>
+                    <p>Cancele suas reservas quando precisar</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">📱</div>
+                    <h3>Responsivo</h3>
+                    <p>Funciona perfeitamente em celular, tablet e desktop</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="reservation">
+        <div class="reservation-hero">
+            <h2>Gerenciar Reservas</h2>
+            <p>Utilize as ferramentas abaixo para controlar suas reservas</p>
+        </div>
+
+        <div class="system-container">
+            <!-- LIST TIMES MODAL -->
+            <div id="list-modal" class="modal">
+                <div class="modal-content">
+                    <span class="modal-close" onclick="closeModal('list-modal')">&times;</span>
+                    <h2>📅 Lista de Horários</h2>
+                    <label>Data:</label>
+                    <input type="date" id="list-date" onchange="atualizarDiaSemanaPesquisa()">
+                    <div id="dia-semana-pesquisa" class="info-box" style="display: none;"></div>
+                    <button onclick="listarHorarios()">Listar</button>
+                    <div id="list-result"></div>
+                </div>
+            </div>
+
+            <!-- RESERVE MODAL -->
+            <div id="reserve-modal" class="modal">
+                <div class="modal-content">
+                    <span class="modal-close" onclick="closeModal('reserve-modal')">&times;</span>
+                    <h2>✅ Reservar Horário</h2>
+                    <label>Data:</label>
+                    <input type="date" id="reserve-date" onchange="atualizarDiaSemanaReserva()">
+                    <div id="dia-semana-reserva" class="info-box" style="display: none;"></div>
+
+                    <label>Horário:</label>
+                    <select id="reserve-time"></select>
+
+                    <label>Seu nome:</label>
+                    <input type="text" id="reserve-name">
+
+                    <button onclick="reservar()">Reservar</button>
+                    <div id="reserve-result"></div>
+                </div>
+            </div>
+
+            <!-- CANCEL MODAL -->
+            <div id="cancel-modal" class="modal">
+                <div class="modal-content">
+                    <span class="modal-close" onclick="closeModal('cancel-modal')">&times;</span>
+                    <h2>❌ Cancelar Reserva</h2>
+                    <label>Dia da Semana:</label>
+                    <select id="cancel-weekday" onchange="carregarHorariosPorDiaSemana()">
+                        <option value="">-- Selecione um dia --</option>
+                        <option value="0">Domingo</option>
+                        <option value="1">Segunda-feira</option>
+                        <option value="2">Terça-feira</option>
+                        <option value="3">Quarta-feira</option>
+                        <option value="4">Quinta-feira</option>
+                        <option value="5">Sexta-feira</option>
+                        <option value="6">Sábado</option>
+                    </select>
+
+                    <div id="horarios-dia-semana-container" style="margin-top: 1rem; display: none;">
+                        <label>Selecione o horário reservado:</label>
+                        <div id="horarios-dia-semana"></div>
+                    </div>
+
+                    <label style="margin-top: 1.5rem;">Data da Reserva:</label>
+                    <input type="text" id="cancel-data-display" readonly style="background: #f0f0f0; cursor: not-allowed;">
+
+                    <label style="margin-top: 1.5rem;">Seu nome:</label>
+                    <input type="text" id="cancel-name-display" readonly style="background: #f0f0f0; cursor: not-allowed;">
+
+                    <label style="margin-top: 1.5rem;">Horário:</label>
+                    <input type="text" id="cancel-horario-display" readonly style="background: #f0f0f0; cursor: not-allowed;">
+
+                    <button style="background: var(--danger); box-shadow: 0 5px 15px rgba(238, 90, 82, 0.3); margin-top: 1.5rem;" onclick="cancelarReservaSelecionada()">Cancelar Reserva</button>
+                    <div id="cancel-result"></div>
+                </div>
+            </div>
+
+            <!-- MONTHLY RESERVE MODAL -->
+            <div id="monthly-modal" class="modal">
+                <div class="modal-content">
+                    <span class="modal-close" onclick="closeModal('monthly-modal')">&times;</span>
+                    <h2>📅 Reservar Horário Fixo (Mensal)</h2>
+                    
+                    <label>Data de Início:</label>
+                    <input type="date" id="monthly-start-date">
+
+                    <label>Dia da Semana:</label>
+                    <select id="monthly-weekday">
+                        <option value="">-- Selecione um dia --</option>
+                        <option value="0">Domingo</option>
+                        <option value="1">Segunda-feira</option>
+                        <option value="2">Terça-feira</option>
+                        <option value="3">Quarta-feira</option>
+                        <option value="4">Quinta-feira</option>
+                        <option value="5">Sexta-feira</option>
+                        <option value="6">Sábado</option>
+                    </select>
+
+                    <label>Horário:</label>
+                    <select id="monthly-time"></select>
+
+                    <label>Seu nome:</label>
+                    <input type="text" id="monthly-name">
+
+                    <label>Duração (meses):</label>
+                    <input type="number" id="monthly-months" min="1" value="1">
+
+                    <button onclick="reservarMensal()">Reservar Fixo Mensal</button>
+                    <div id="monthly-result"></div>
+                </div>
+            </div>
+
+            <!-- FIXED LIST MODAL -->
+            <div id="fixed-modal" class="modal">
+                <div class="modal-content">
+                    <span class="modal-close" onclick="closeModal('fixed-modal')">&times;</span>
+                    <h2>📋 Lista de Reservas Fixas Mensais</h2>
+                    <button onclick="listarFixos()">Listar Reservas Fixas</button>
+                    <div id="fixed-list-result"></div>
+                </div>
+            </div>
+
+            <!-- CANCEL FIXED MONTHLY MODAL -->
+            <div id="cancel-fixed-modal" class="modal">
+                <div class="modal-content">
+                    <span class="modal-close" onclick="closeModal('cancel-fixed-modal')">&times;</span>
+                    <h2>❌ Cancelar Reserva Fixa Mensal</h2>
+                    
+                    <label>Dia da Semana:</label>
+                    <select id="cancel-fixed-weekday" onchange="carregarHorariosFixos()">
+                        <option value="">-- Selecione um dia --</option>
+                        <option value="0">Domingo</option>
+                        <option value="1">Segunda-feira</option>
+                        <option value="2">Terça-feira</option>
+                        <option value="3">Quarta-feira</option>
+                        <option value="4">Quinta-feira</option>
+                        <option value="5">Sexta-feira</option>
+                        <option value="6">Sábado</option>
+                    </select>
+
+                    <div id="horarios-disponiveis-container" style="margin-top: 1rem; display: none;">
+                        <label>Selecione o horário reservado:</label>
+                        <div id="horarios-disponiveis"></div>
+                    </div>
+
+                    <label style="margin-top: 1.5rem;">Nome da Pessoa:</label>
+                    <input type="text" id="cancel-fixed-name-display" readonly style="background: #f0f0f0; cursor: not-allowed;">
+
+                    <button style="background: var(--danger); box-shadow: 0 5px 15px rgba(238, 90, 82, 0.3); margin-top: 1.5rem;" onclick="cancelarFixoMensal()">Cancelar Reserva Fixa</button>
+                    <div id="cancel-fixed-result"></div>
+                </div>
+            </div>
+
+            <!-- QUICK ACTION BUTTONS -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-top: 2rem;">
+                <button class="btn-primary" onclick="openModal('reserve-modal')">✅ Fazer Reserva</button>
+                <button class="btn-primary" onclick="openModal('list-modal')">📋 Ver Disponibilidade</button>
+                <button class="btn-primary" onclick="openModal('cancel-modal')">❌ Cancelar</button>
+                <button class="btn-primary" onclick="openModal('monthly-modal')">📅 Reserva Fixa Mensal</button>
+                <button class="btn-primary" onclick="openModal('fixed-modal')">📝 Minhas Reservas Fixas</button>
+                <button class="btn-primary" onclick="openModal('cancel-fixed-modal')">🗑️ Cancelar Fixa Mensal</button>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer" id="contact">
+        <p>&copy; 2026 EETEPA - Sistema de Reserva de Quadra</p>
+        <p>📧 Email: henriquegalucio33@gmail.com | 📱 Telefone: (91) 992268738</p>
+        <p style="margin-top: 1.5rem; font-size: 0.9em; opacity: 0.8;">Desenvolvido Pelo Aluno Henrique</p>
+    </footer>
+
+    <script>
+        const horarios = [
+            "08:00-09:00","09:00-10:00","10:00-11:00",
+            "11:00-12:00","12:00-13:00","13:00-14:00",
+            "14:00-15:00","15:00-16:00","16:00-17:00","17:00-18:00","18:00-19:00","19:00-20:00","20:00-21:00","21:00-22:00","22:00-23:00","23:00-00:00"
+        ];
+
+        const diasSemana = ["Domingo", "Segunda-feira", "Terça-feira", "Quarta-feira", "Quinta-feira", "Sexta-feira", "Sábado"];
+
+        ["reserve-time","monthly-time"].forEach(id => {
+            const s = document.getElementById(id);
+            horarios.forEach(h => {
+                const o = document.createElement("option");
+                o.value = h;
+                o.text = h;
+                s.appendChild(o);
+            });
+        });
+
+        let reservas = JSON.parse(localStorage.getItem("reservas")) || {};
+        let reservasFixasMensais = JSON.parse(localStorage.getItem("reservasFixasMensais")) || {};
+        let horarioSelecionadoFixo = null;
+        let horarioSelecionadoCancelar = null;
+
+        function salvar() {
+            localStorage.setItem("reservas", JSON.stringify(reservas));
+        }
+
+        function salvarFixasMensais() {
+            localStorage.setItem("reservasFixasMensais", JSON.stringify(reservasFixasMensais));
+        }
+
+        const hoje = new Date().toISOString().split("T")[0];
+        ["list-date", "reserve-date"].forEach(id => {
+            document.getElementById(id).min = hoje;
+        });
+
+        function formatarData(data) {
+            const [ano, mes, dia] = data.split('-');
+            return `${dia}/${mes}/${ano}`;
+        }
+
+        function obterDiaSemana(data) {
+            const [ano, mes, dia] = data.split('-');
+            const date = new Date(ano, mes - 1, dia);
+            return date.getDay();
+        }
+
+        function obterNomeDiaSemana(data) {
+            const diaSemanaNum = obterDiaSemana(data);
+            return diasSemana[diaSemanaNum];
+        }
+
+        function atualizarDiaSemanaPesquisa() {
+            const d = document.getElementById('list-date').value;
+            const container = document.getElementById('dia-semana-pesquisa');
+            if (d) {
+                const dia = obterNomeDiaSemana(d);
+                container.textContent = `📅 ${formatarData(d)} - ${dia}`;
+                container.style.display = 'block';
+            } else {
+                container.style.display = 'none';
+            }
+        }
+
+        function atualizarDiaSemanaReserva() {
+            const d = document.getElementById('reserve-date').value;
+            const container = document.getElementById('dia-semana-reserva');
+            if (d) {
+                const dia = obterNomeDiaSemana(d);
+                container.textContent = `📅 ${formatarData(d)} - ${dia}`;
+                container.style.display = 'block';
+            } else {
+                container.style.display = 'none';
+            }
+        }
+
+        function openModal(modalId) {
+            document.getElementById(modalId).classList.add('active');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+        }
+
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.classList.remove('active');
+            }
+        };
+
+        function listarHorarios() {
+            const d = document.getElementById('list-date').value;
+            if (!d) {
+                document.getElementById('list-result').innerHTML = "<p class='error'>Selecione uma data</p>";
+                return;
+            }
+            
+            const diaSemanaNum = obterDiaSemana(d);
+            
+            reservas[d] ??= {};
+            
+            let horariosOcupados = {...reservas[d]};
+            
+            for (const nome in reservasFixasMensais) {
+                for (const horario in reservasFixasMensais[nome]) {
+                    const dados = reservasFixasMensais[nome][horario];
+                    if (dados && dados.weekday === diaSemanaNum && dados.datas) {
+                        if (dados.datas.includes(d)) {
+                            horariosOcupados[horario] = nome + " (FIXO MENSAL)";
+                        }
+                    }
+                }
+            }
+            
+            const disp = horarios.filter(h => !horariosOcupados[h]);
+            const ocu = Object.entries(horariosOcupados);
+
+            document.getElementById('list-result').innerHTML = `
+                <h3>Disponíveis (${disp.length})</h3>
+                <ul>${disp.length > 0 ? disp.map(h => `<li>${h}</li>`).join("") : "<li style='color: #999;'>Nenhum horário disponível</li>"}</ul>
+                <h3>Ocupados (${ocu.length})</h3>
+                <ul>${ocu.length > 0 ? ocu.map(([h, n]) => `<li>${h} - ${n}</li>`).join("") : "<li style='color: #999;'>Nenhuma ocupação</li>"}</ul>`;
+        }
+
+        function reservar() {
+            const d = document.getElementById('reserve-date').value;
+            const h = document.getElementById('reserve-time').value;
+            const n = document.getElementById('reserve-name').value.trim().toLowerCase();
+
+            if (!d || !h || !n) {
+                document.getElementById('reserve-result').innerHTML = "<p class='error'>Preencha tudo</p>";
+                return;
+            }
+
+            const diaSemanaNum = obterDiaSemana(d);
+            
+            reservas[d] ??= {};
+
+            if (reservas[d][h]) {
+                document.getElementById('reserve-result').innerHTML = "<p class='error'>Horário já reservado</p>";
+                return;
+            }
+
+            for (const nome in reservasFixasMensais) {
+                for (const horario in reservasFixasMensais[nome]) {
+                    const dados = reservasFixasMensais[nome][horario];
+                    if (dados && dados.weekday === diaSemanaNum && horario === h && dados.datas) {
+                        if (dados.datas.includes(d)) {
+                            document.getElementById('reserve-result').innerHTML = "<p class='error'>Este horário está ocupado por uma reserva fixa mensal!</p>";
+                            return;
+                        }
+                    }
+                }
+            }
+
+            if (Object.values(reservas[d]).map(x => x.toLowerCase()).includes(n)) {
+                document.getElementById('reserve-result').innerHTML = "<p class='error'>Você já tem reserva neste dia</p>";
+                return;
+            }
+
+            reservas[d][h] = n;
+            salvar();
+            document.getElementById('reserve-result').innerHTML = "<p class='success'>Reserva realizada! ✅</p><div class='button-group'><button class='print-btn' onclick='imprimirComprovante(\"" + d + "\", \"" + h + "\", \"" + n + "\")'>🖨️ Imprimir</button><button class='print-btn' onclick='exportarPDFSimples(\"" + d + "\", \"" + h + "\", \"" + n + "\")'>📄 PDF</button></div>";
+        }
+
+        function carregarHorariosPorDiaSemana() {
+            const diaSemanaNum = parseInt(document.getElementById('cancel-weekday').value);
+            const container = document.getElementById('horarios-dia-semana-container');
+            const horariosDiv = document.getElementById('horarios-dia-semana');
+            
+            if (document.getElementById('cancel-weekday').value === "") {
+                container.style.display = 'none';
+                document.getElementById('cancel-data-display').value = '';
+                document.getElementById('cancel-name-display').value = '';
+                document.getElementById('cancel-horario-display').value = '';
+                horarioSelecionadoCancelar = null;
+                return;
+            }
+
+            const horariosDodia = [];
+            
+            for (const data in reservas) {
+                if (obterDiaSemana(data) === diaSemanaNum) {
+                    for (const horario in reservas[data]) {
+                        const nome = reservas[data][horario];
+                        let isFixoMensal = false;
+                        for (const nomeFixo in reservasFixasMensais) {
+                            for (const horarioFixo in reservasFixasMensais[nomeFixo]) {
+                                const dadosFixo = reservasFixasMensais[nomeFixo][horarioFixo];
+                                if (dadosFixo && dadosFixo.datas && dadosFixo.datas.includes(data) && horarioFixo === horario) {
+                                    if (nome === nomeFixo) {
+                                        isFixoMensal = true;
+                                    }
+                                }
+                            }
+                        }
+                        
+                        if (!isFixoMensal) {
+                            horariosDodia.push({
+                                data: data,
+                                horario: horario,
+                                nome: nome
+                            });
+                        }
+                    }
+                }
+            }
+
+            if (horariosDodia.length === 0) {
+                horariosDiv.innerHTML = "<p class='error'>Nenhuma reserva única encontrada para este dia da semana</p>";
+                container.style.display = 'block';
+                document.getElementById('cancel-data-display').value = '';
+                document.getElementById('cancel-name-display').value = '';
+                document.getElementById('cancel-horario-display').value = '';
+                horarioSelecionadoCancelar = null;
+                return;
+            }
+
+            let html = '';
+            horariosDodia.forEach((item) => {
+                html += `
+                    <div class="horario-item" onclick="selecionarHorarioPorDiaSemana('${item.data}', '${item.horario}', '${item.nome}')">
+                        <strong>🕒 ${item.horario}</strong>
+                        <small>👤 ${item.nome}</small>
+                        <small>📅 ${formatarData(item.data)}</small>
+                    </div>
+                `;
+            });
+
+            horariosDiv.innerHTML = html;
+            container.style.display = 'block';
+        }
+
+        function selecionarHorarioPorDiaSemana(data, horario, nome) {
+            const itens = document.querySelectorAll('#horarios-dia-semana .horario-item');
+            
+            itens.forEach(item => item.classList.remove('selected'));
+            
+            event.currentTarget.classList.add('selected');
+
+            horarioSelecionadoCancelar = {
+                nome: nome,
+                horario: horario,
+                data: data
+            };
+            
+            document.getElementById('cancel-data-display').value = formatarData(data);
+            document.getElementById('cancel-name-display').value = nome;
+            document.getElementById('cancel-horario-display').value = horario;
+        }
+
+        function cancelarReservaSelecionada() {
+            if (!horarioSelecionadoCancelar) {
+                document.getElementById('cancel-result').innerHTML = "<p class='error'>Selecione um horário</p>";
+                return;
+            }
+
+            const d = horarioSelecionadoCancelar.data;
+            const h = horarioSelecionadoCancelar.horario;
+            const n = horarioSelecionadoCancelar.nome;
+
+            const horaInicio = h.split("-")[0];
+            const reservaTime = new Date(`${d}T${horaInicio}:00`);
+            const limite = new Date(Date.now() + 60 * 60 * 1000);
+
+            if (limite >= reservaTime) {
+                document.getElementById('cancel-result').innerHTML = "<p class='error'>Só é possível cancelar até 1h antes</p>";
+                return;
+            }
+
+            if (reservas[d] && reservas[d][h] && reservas[d][h].toLowerCase() === n.toLowerCase()) {
+                delete reservas[d][h];
+                salvar();
+                document.getElementById('cancel-result').innerHTML = "<p class='success'>Reserva cancelada com sucesso! ✅</p>";
+                
+                setTimeout(() => {
+                    horarioSelecionadoCancelar = null;
+                    document.getElementById('cancel-weekday').value = '';
+                    document.getElementById('horarios-dia-semana-container').style.display = 'none';
+                    document.getElementById('cancel-data-display').value = '';
+                    document.getElementById('cancel-name-display').value = '';
+                    document.getElementById('cancel-horario-display').value = '';
+                }, 2000);
+            } else {
+                document.getElementById('cancel-result').innerHTML = "<p class='error'>Reserva não encontrada</p>";
+            }
+        }
+
+        function carregarHorariosFixos() {
+            const diaSemanaNum = parseInt(document.getElementById('cancel-fixed-weekday').value);
+            const container = document.getElementById('horarios-disponiveis-container');
+            const horariosDiv = document.getElementById('horarios-disponiveis');
+            
+            if (document.getElementById('cancel-fixed-weekday').value === "") {
+                container.style.display = 'none';
+                document.getElementById('cancel-fixed-name-display').value = '';
+                horarioSelecionadoFixo = null;
+                return;
+            }
+
+            const horariosDodia = [];
+            
+            for (const nome in reservasFixasMensais) {
+                for (const horario in reservasFixasMensais[nome]) {
+                    const dados = reservasFixasMensais[nome][horario];
+                    if (dados && dados.weekday === diaSemanaNum && dados.datas) {
+                        horariosDodia.push({
+                            horario: horario,
+                            nome: nome,
+                            datas: dados.datas
+                        });
+                    }
+                }
+            }
+
+            if (horariosDodia.length === 0) {
+                horariosDiv.innerHTML = "<p class='error'>Nenhuma reserva fixa encontrada para este dia da semana</p>";
+                container.style.display = 'block';
+                document.getElementById('cancel-fixed-name-display').value = '';
+                horarioSelecionadoFixo = null;
+                return;
+            }
+
+            let html = '';
+            horariosDodia.forEach((item) => {
+                html += `
+                    <div class="horario-item" onclick="selecionarHorarioFixo('${item.nome}', '${item.horario}', ${diaSemanaNum})">
+                        <strong>🕒 ${item.horario}</strong>
+                        <small>👤 ${item.nome}</small>
+                        <small>📅 ${item.datas.length} data(s) reservada(s)</small>
+                    </div>
+                `;
+            });
+
+            horariosDiv.innerHTML = html;
+            container.style.display = 'block';
+        }
+
+        function selecionarHorarioFixo(nome, horario, diaSemana) {
+            const itens = document.querySelectorAll('#horarios-disponiveis .horario-item');
+            
+            itens.forEach(item => item.classList.remove('selected'));
+            
+            event.currentTarget.classList.add('selected');
+
+            horarioSelecionadoFixo = {
+                nome: nome,
+                horario: horario,
+                diaSemana: diaSemana
+            };
+            document.getElementById('cancel-fixed-name-display').value = nome;
+        }
+
+        function reservarMensal() {
+            const dataInicio = document.getElementById('monthly-start-date').value;
+            const diaSemanaNum = parseInt(document.getElementById('monthly-weekday').value);
+            const h = document.getElementById('monthly-time').value;
+            const n = document.getElementById('monthly-name').value.trim().toLowerCase();
+            const meses = parseInt(document.getElementById('monthly-months').value);
+
+            if (!dataInicio || document.getElementById('monthly-weekday').value === "" || !h || !n || meses < 1) {
+                document.getElementById('monthly-result').innerHTML = "<p class='error'>Preencha tudo corretamente</p>";
+                return;
+            }
+
+            const [anoInicio, mesInicio, diaInicio] = dataInicio.split('-');
+            const anoAtual = parseInt(anoInicio);
+            const mesAtual = parseInt(mesInicio) - 1;
+
+            reservasFixasMensais[n] ??= {};
+            
+            if (reservasFixasMensais[n][h]) {
+                document.getElementById('monthly-result').innerHTML = "<p class='error'>Você já possui uma reserva fixa neste horário</p>";
+                return;
+            }
+
+            reservasFixasMensais[n][h] = {};
+            reservasFixasMensais[n][h].weekday = diaSemanaNum;
+            reservasFixasMensais[n][h].datas = [];
+
+            for (let i = 0; i < meses; i++) {
+                const mes = mesAtual + i;
+                const ano = anoAtual + Math.floor(mes / 12);
+                const mesAjustado = mes % 12;
+
+                let dia = 1;
+                while (true) {
+                    const data = new Date(ano, mesAjustado, dia);
+                    if (data.getDay() === diaSemanaNum) {
+                        break;
+                    }
+                    dia++;
+                }
+
+                const dataStr = `${ano}-${String(mesAjustado + 1).padStart(2, '0')}-${String(dia).padStart(2, '0')}`;
+
+                reservas[dataStr] ??= {};
+                if (reservas[dataStr][h]) {
+                    document.getElementById('monthly-result').innerHTML = "<p class='error'>Conflito em " + formatarData(dataStr) + "</p>";
+                    delete reservasFixasMensais[n][h];
+                    return;
+                }
+                
+                reservas[dataStr][h] = n;
+                reservasFixasMensais[n][h].datas.push(dataStr);
+            }
+
+            salvar();
+            salvarFixasMensais();
+            document.getElementById('monthly-result').innerHTML = "<p class='success'>Reserva fixa mensal realizada! (" + diasSemana[diaSemanaNum] + ") ✅</p><div class='button-group'><button class='print-btn' onclick='imprimirComprovanteMensal(\"" + n + "\", \"" + h + "\")'>🖨️ Imprimir</button><button class='print-btn' onclick='exportarPDFMensalSimples(\"" + n + "\", \"" + h + "\")'>📄 PDF</button></div>";
+        }
+
+        function listarFixos() {
+            let html = "<h3>Reservas Fixas Mensais</h3>";
+            if (Object.keys(reservasFixasMensais).length === 0) {
+                html += "<p class='error'>Nenhuma reserva fixa encontrada</p>";
+            } else {
+                html += "<ul>";
+                for (const nome in reservasFixasMensais) {
+                    for (const horario in reservasFixasMensais[nome]) {
+                        const dados = reservasFixasMensais[nome][horario];
+                        if (dados && dados.datas && dados.datas.length > 0) {
+                            const diaSemanaNum = dados.weekday;
+                            html += `<li>${nome} - ${horario} (${diasSemana[diaSemanaNum]}) - ${dados.datas.length} data(s)</li>`;
+                        }
+                    }
+                }
+                html += "</ul>";
+            }
+            document.getElementById('fixed-list-result').innerHTML = html;
+        }
+
+        function cancelarFixoMensal() {
+            if (!horarioSelecionadoFixo) {
+                document.getElementById('cancel-fixed-result').innerHTML = "<p class='error'>Selecione um horário</p>";
+                return;
+            }
+
+            const n = horarioSelecionadoFixo.nome;
+            const h = horarioSelecionadoFixo.horario;
+            const diaSemanaNum = horarioSelecionadoFixo.diaSemana;
+
+            if (reservasFixasMensais[n] && reservasFixasMensais[n][h]) {
+                const dados = reservasFixasMensais[n][h];
+                const datas = dados.datas || [];
+                
+                if (Array.isArray(datas)) {
+                    datas.forEach(data => {
+                        if (reservas[data] && reservas[data][h]) {
+                            delete reservas[data][h];
+                        }
+                    });
+                }
+
+                delete reservasFixasMensais[n][h];
+
+                if (Object.keys(reservasFixasMensais[n]).length === 0) {
+                    delete reservasFixasMensais[n];
+                }
+
+                salvar();
+                salvarFixasMensais();
+                const qtdDatas = datas.length;
+                document.getElementById('cancel-fixed-result').innerHTML = "<p class='success'>Reserva fixa mensal cancelada! " + qtdDatas + " data(s) removida(s) ✅</p>";
+                
+                setTimeout(() => {
+                    horarioSelecionadoFixo = null;
+                    document.getElementById('cancel-fixed-weekday').value = '';
+                    document.getElementById('horarios-disponiveis-container').style.display = 'none';
+                    document.getElementById('cancel-fixed-name-display').value = '';
+                }, 2000);
+            } else {
+                document.getElementById('cancel-fixed-result').innerHTML = "<p class='error'>Reserva fixa não encontrada</p>";
+            }
+        }
+
+        function imprimirComprovante(data, horario, nome) {
+            const comprovanteWindow = window.open('', '_blank', 'width=600,height=400');
+            comprovanteWindow.document.write(`
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <title>Comprovante de Reserva</title>
+                    <style>
+                        body { font-family: Arial, sans-serif; text-align: center; padding: 20px; }
+                        h1 { color: #667eea; }
+                        p { font-size: 18px; }
+                        .details { border: 1px solid #ddd; padding: 20px; margin: 20px auto; width: 80%; background: #f9f9f9; }
+                    </style>
+                </head>
+                <body>
+                    <h1>Comprovante de Reserva</h1>
+                    <div class="details">
+                        <p><strong>Nome:</strong> ${nome}</p>
+                        <p><strong>Data:</strong> ${formatarData(data)}</p>
+                        <p><strong>Dia:</strong> ${obterNomeDiaSemana(data)}</p>
+                        <p><strong>Horário:</strong> ${horario}</p>
+                    </div>
+                </body>
+                </html>
+            `);
+            comprovanteWindow.document.close();
+        }
+
+        function imprimirComprovanteMensal(nome, horario) {
+            const comprovanteWindow = window.open('', '_blank', 'width=600,height=600');
+            const dados = reservasFixasMensais[nome][horario];
+            const datas = dados && dados.datas && Array.isArray(dados.datas) ? dados.datas.map(d => formatarData(d)).join('<br>') : '';
+            const diaSemanaNum = dados ? dados.weekday : 0;
+            
+            comprovanteWindow.document.write(`
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <title>Comprovante de Reserva Mensal</title>
+                    <style>
+                        body { font-family: Arial, sans-serif; text-align: center; padding: 20px; }
+                        h1 { color: #667eea; }
+                        p { font-size: 18px; }
+                        .details { border: 1px solid #ddd; padding: 20px; margin: 20px auto; width: 80%; background: #f9f9f9; }
+                        .datas { text-align: left; }
+                    </style>
+                </head>
+                <body>
+                    <h1>Comprovante de Reserva Mensal</h1>
+                    <div class="details">
+                        <p><strong>Nome:</strong> ${nome}</p>
+                        <p><strong>Horário:</strong> ${horario}</p>
+                        <p><strong>Dia da Semana:</strong> ${diasSemana[diaSemanaNum]}</p>
+                        <p><strong>Duração:</strong> ${dados && dados.datas ? dados.datas.length : 0} mês(es)</p>
+                        <div class="datas">
+                            <strong>Datas Reservadas:</strong><br>
+                            ${datas}
+                        </div>
+                    </div>
+                </body>
+                </html>
+            `);
+            comprovanteWindow.document.close();
+        }
+
+        function exportarPDFSimples(data, horario, nome) {
+            try {
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF({
+                    orientation: 'portrait',
+                    unit: 'mm',
+                    format: 'a4'
+                });
+
+                doc.setFontSize(20);
+                doc.setTextColor(102, 126, 234);
+                doc.text('COMPROVANTE DE RESERVA', 105, 30, { align: 'center' });
+
+                doc.setDrawColor(102, 126, 234);
+                doc.line(20, 40, 190, 40);
+
+                doc.setFontSize(14);
+                doc.setTextColor(0, 0, 0);
+                
+                let yPos = 60;
+                doc.text('QUADRA EETEPA', 105, yPos, { align: 'center' });
+                
+                yPos += 20;
+                doc.setFontSize(12);
+                doc.text(`Nome: ${nome}`, 30, yPos);
+                
+                yPos += 15;
+                doc.text(`Data: ${formatarData(data)}`, 30, yPos);
+
+                yPos += 15;
+                doc.text(`Dia: ${obterNomeDiaSemana(data)}`, 30, yPos);
+                
+                yPos += 15;
+                doc.text(`Horário: ${horario}`, 30, yPos);
+
+                yPos += 20;
+                doc.line(20, yPos, 190, yPos);
+
+                yPos += 15;
+                doc.setFontSize(10);
+                doc.setTextColor(100, 100, 100);
+                doc.text(`Data de geração: ${new Date().toLocaleString('pt-BR')}`, 105, yPos, { align: 'center' });
+
+                doc.save(`comprovante_${formatarData(data)}.pdf`);
+            } catch (err) {
+                console.error('Erro:', err);
+                alert('Erro ao gerar PDF!');
+            }
+        }
+
+        function exportarPDFMensalSimples(nome, horario) {
+            try {
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF({
+                    orientation: 'portrait',
+                    unit: 'mm',
+                    format: 'a4'
+                });
+
+                const dados = reservasFixasMensais[nome][horario];
+                const datas = dados && dados.datas ? dados.datas : [];
+                const diaSemanaNum = dados ? dados.weekday : 0;
+
+                doc.setFontSize(20);
+                doc.setTextColor(102, 126, 234);
+                doc.text('COMPROVANTE DE RESERVA MENSAL', 105, 30, { align: 'center' });
+
+                doc.setDrawColor(102, 126, 234);
+                doc.line(20, 40, 190, 40);
+
+                doc.setFontSize(14);
+                doc.setTextColor(0, 0, 0);
+                
+                let yPos = 60;
+                doc.text('QUADRA EETEPA', 105, yPos, { align: 'center' });
+                
+                yPos += 20;
+                doc.setFontSize(12);
+                doc.text(`Nome: ${nome}`, 30, yPos);
+                
+                yPos += 12;
+                doc.text(`Horário Fixo: ${horario}`, 30, yPos);
+
+                yPos += 12;
+                doc.text(`Dia da Semana: ${diasSemana[diaSemanaNum]}`, 30, yPos);
+                
+                yPos += 12;
+                doc.text(`Quantidade de Meses: ${datas.length}`, 30, yPos);
+
+                yPos += 20;
+                doc.setFontSize(11);
+                doc.setTextColor(80, 80, 80);
+                doc.text('Datas Reservadas:', 30, yPos);
+                
+                yPos += 10;
+                doc.setFontSize(10);
+                
+                datas.forEach(data => {
+                    if (yPos > 270) {
+                        doc.addPage();
+                        yPos = 20;
+                    }
+                    doc.text(`• ${formatarData(data)} (${obterNomeDiaSemana(data)})`, 35, yPos);
+                    yPos += 8;
+                });
+
+                yPos += 10;
+                doc.setDrawColor(102, 126, 234);
+                doc.line(20, yPos, 190, yPos);
+
+                yPos += 10;
+                doc.setFontSize(10);
+                doc.setTextColor(100, 100, 100);
+                doc.text(`Data de geração: ${new Date().toLocaleString('pt-BR')}`, 105, yPos, { align: 'center' });
+
+                doc.save(`comprovante_mensal_${nome}.pdf`);
+            } catch (err) {
+                console.error('Erro:', err);
+                alert('Erro ao gerar PDF!');
+            }
+        }
+    </script>
+</body>
+</html>
